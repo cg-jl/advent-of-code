@@ -23,7 +23,7 @@ struct Cpu {
 impl From<&str> for Cpu {
     fn from(input: &str) -> Self {
         let mut cpu = Self::new();
-        cpu.instructions = Self::read_instructions(input);
+        cpu.load_program(&Self::read_instructions(input));
         cpu
     }
 }
@@ -86,7 +86,6 @@ impl Cpu {
         match self.instructions.get(self.current_line as usize) {
             Some(i) => {
                 opt = Some(*i);
-                dbg!(i);
                 match i.instruction_type {
                     InstructionType::Jmp => {
                         self.current_line += i.value - 1;
@@ -103,20 +102,11 @@ impl Cpu {
         }
         (ret_line, opt)
     }
-    pub fn jmp(&mut self, line: usize) {
-        if let Some(_) = self.instructions.get(line) {
-            self.current_line = line as i32;
-        }
-    }
     pub fn counter(&self) -> i32 {
         self.current_line
     }
     pub fn get_accumulator(&self) -> i32 {
         self.accumulator
-    }
-
-    pub fn next_instruction(&mut self) -> Option<&Instruction> {
-        self.instructions.get(self.current_line as usize)
     }
 
     pub fn swap_nop_jmp(&mut self, line: usize) {
@@ -134,7 +124,8 @@ impl Cpu {
         self.accumulator = 0;
     }
 
-    pub fn execute_until_repeat(&mut self) -> bool {
+    // returns true if it could execute with no loops
+    pub fn try_execute_no_loops(&mut self) -> bool {
         let mut set = HashSet::new();
 
         while !set.contains(&self.counter()) {
@@ -146,15 +137,11 @@ impl Cpu {
         }
         false
     }
-
-    pub fn execute_until_finish(&mut self) {
-        while let (_, Some(_)) = self.step() {}
-    }
 }
 
 pub fn part1(input: &str) -> i32 {
     let mut cpu = Cpu::from(input);
-    cpu.execute_until_repeat();
+    cpu.try_execute_no_loops();
     cpu.get_accumulator()
 }
 
@@ -168,7 +155,7 @@ pub fn part2(input: &str) -> i32 {
         }
         cpu.reset();
         cpu.swap_nop_jmp(line);
-        if cpu.execute_until_repeat() {
+        if cpu.try_execute_no_loops() {
             return cpu.get_accumulator();
         }
         cpu.swap_nop_jmp(line);
