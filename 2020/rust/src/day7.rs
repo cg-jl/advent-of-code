@@ -1,8 +1,8 @@
 use std::collections::{HashMap, HashSet, VecDeque};
 
 pub struct Rule<'a> {
-    fgraph: HashMap<&'a str, HashMap<&'a str, i32>>,
-    bgraph: HashMap<&'a str, HashMap<&'a str, i32>>,
+    fgraph: HashMap<&'a str, HashMap<&'a str, u32>>,
+    bgraph: HashMap<&'a str, HashMap<&'a str, u32>>,
 }
 
 pub fn partition<'a>(string: &'a str, what: &'a str) -> (&'a str, &'a str, &'a str) {
@@ -43,10 +43,10 @@ impl<'a> Rule<'a> {
         rules
     }
 
-    fn parse(edge: &'a str) -> (&'a str, i32) {
+    fn parse(edge: &'a str) -> (&'a str, u32) {
         let (count, _, bag) = partition(edge, " ");
         let (bag, _, _) = rpartition(bag, " ");
-        (bag, count.parse::<i32>().unwrap())
+        (bag, count.parse().unwrap())
     }
 
     fn add_rule(&mut self, rule: &'a str) {
@@ -88,19 +88,20 @@ impl<'a> Rule<'a> {
         container
     }
 
-    pub fn weight(&self, bag: &str) -> i32 {
-        self.weight_cache(&mut HashMap::new(), bag)
+    pub fn weight(&self, bag: &str) -> u32 {
+        self.fgraph[bag]
+            .iter()
+            .map(|(&other, &count)| count * (1 + self.weight(other)))
+            .sum()
     }
+}
 
-    fn weight_cache(&self, cache: &mut HashMap<&str, i32>, bag: &str) -> i32 {
-        match cache.get(bag) {
-            Some(&i) => i,
-            None => self.fgraph[bag]
-                .iter()
-                .map(|(&other, &count)| count * (1 + self.weight_cache(cache, other)))
-                .sum(),
-        }
-    }
+pub fn part1(input: &str) -> u32 {
+    Rule::new(input).find_containers_for("shiny bold").len() as u32
+}
+
+pub fn part2(input: &str) -> u32 {
+    Rule::new(input).weight("shiny gold")
 }
 
 #[cfg(test)]

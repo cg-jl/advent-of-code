@@ -1,9 +1,12 @@
 pub mod day1;
 pub mod day2;
 pub mod day3;
-pub mod day4;
+//pub mod day4; // disable it for now
 /*
-TODO: days 5, 6, 7
+TODO: days 5, 6, 7, 9, 10
 */
+pub mod day11;
+pub mod day11_faster;
+pub mod day12;
 pub mod day7;
 pub mod day8;

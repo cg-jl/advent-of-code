@@ -1,6 +1,5 @@
 use std::cmp::min;
 use std::collections::HashSet;
-use std::fmt;
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
 enum InstructionType {

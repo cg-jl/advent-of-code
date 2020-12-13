@@ -1,6 +1,5 @@
-use aoc_rust::day8;
-use std::fs;
+use aoc_rust::day12;
 fn main() {
-    let contents = fs::read_to_string("/home/gsus/.config/aoc_helper/2020/8.in").unwrap();
-    println!("{}", day8::part2(&contents));
+    let mut contents: &'static [u8] = include_bytes!("/home/gsus/.config/aoc_helper/2020/12.in");
+    println!("{}", day12::part1(&mut contents));
 }
