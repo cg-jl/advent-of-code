@@ -22,6 +22,12 @@ fn day12(c: &mut Criterion) {
     c.bench_function("day12::part2", |b| b.iter(|| day12::part2(&mut contents)));
 }
 
+use aoc_rust::day13;
+fn day13(c: &mut Criterion) {
+    let mut contents: &'static [u8] = include_bytes!("/home/gsus/.config/aoc_helper/2020/13.in");
+    c.bench_function("day13::part1", |b| b.iter(|| day13::part1(&contents)));
+}
+
 // fn bench_part1(c: &mut Criterion) {
 //     let contents = fs::read_to_string("/home/gsus/.config/aoc_helper/2020/11.in").unwrap();
 //     c.bench_function("day11::part1", |b| b.iter(|| day11::part1(&contents)));

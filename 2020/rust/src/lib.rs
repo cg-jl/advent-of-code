@@ -8,5 +8,6 @@ TODO: days 5, 6, 7, 9, 10
 pub mod day11;
 pub mod day11_faster;
 pub mod day12;
+pub mod day13;
 pub mod day7;
 pub mod day8;
