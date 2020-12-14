@@ -1,5 +1,5 @@
-use aoc_rust::day13;
+use aoc_rust::day14;
 fn main() {
-    let mut contents: &'static [u8] = include_bytes!("/home/gsus/.config/aoc_helper/2020/13.in");
-    println!("{}", day13::part2_generic(&contents));
+    let mut contents: &'static [u8] = include_bytes!("../../python/inputs/14.txt");
+    println!("{}", day14::part2(&contents));
 }

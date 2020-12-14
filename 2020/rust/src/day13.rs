@@ -32,6 +32,7 @@ pub fn part1(input: &[u8]) -> i32 {
 use ring_algorithm::chinese_remainder_theorem;
 
 // generic
+// TODO: make it work
 pub fn part2_generic(mut input: &[u8]) -> i64 {
     // fist line doesn't  count
     while input.len() > 0 && input[0] != b'\n' {
