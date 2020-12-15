@@ -12,7 +12,6 @@ fn count_turns(mut input: &[u8], nth: u32) -> u32 {
     let mut map = HashMap::new();
     let mut last = 0;
     let mut current_turn = 1;
-    // windows; linux is 1
     while input.len() > 0 {
         if unsafe { *input.get_unchecked(0)} == b',' {
             input = &input[1..];
