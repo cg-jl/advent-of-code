@@ -1,8 +1,9 @@
+#[cfg(not(windows))]
 use aoc_rust::day11;
 //use aoc_rust::day11_faster;
 use criterion::{criterion_group, criterion_main, Criterion};
-use std::fs;
 
+#[cfg(not(windows))]
 use aoc_rust::day7;
 #[cfg(not(windows))]
 fn day7(c: &mut Criterion) {
@@ -65,6 +66,14 @@ fn day14(c: &mut Criterion) {
     });
 }
 
+
+use aoc_rust::day15;
+fn day15(c: &mut Criterion) {
+    let contents: &'static [u8] = include_bytes!("../inputs/15.txt");
+    c.bench_function("day15::part1", |b| b.iter(|| day15::part1(&contents)));
+    c.bench_function("day15::part2", |b| b.iter(|| day15::part2(&contents)));
+}
+
 // fn bench_part1(c: &mut Criterion) {
 //     let contents = fs::read_to_string("/home/gsus/.config/aoc_helper/2020/11.in").unwrap();
 //     c.bench_function("day11::part1", |b| b.iter(|| day11::part1(&contents)));
@@ -81,5 +90,5 @@ fn day14(c: &mut Criterion) {
 #[cfg(not(windows))]
 criterion_group!(bench, day7, day11, day12);
 #[cfg(windows)]
-criterion_group!(bench, day14);
+criterion_group!(bench, day14, day15);
 criterion_main!(bench);

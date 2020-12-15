@@ -5,7 +5,14 @@ use std::str;
 pub fn part1(input: &[u8]) -> i32 {
     let mut input = input;
     let (start, nd) = parse_partial::<i32, _>(input).unwrap();
+    #[cfg(windows)]
+    {
+    input = &input[nd + 2..];
+    }
+    #[cfg(not(windows))]
+    {
     input = &input[nd + 1..];
+    }
     let mut better_id = 0;
     let mut min_departure = i32::MAX;
     while input.len() > 1 {
@@ -50,9 +57,6 @@ pub fn part2_generic(mut input: &[u8]) -> i64 {
         if input[0] == b',' {
             input = &input[1..];
         }
-        if input[0] == 0 {
-            break;
-        }
         if input[0] == b'x' {
             input = &input[cmp::min(input.len(), 2)..];
         } else {
@@ -80,16 +84,16 @@ mod tests {
 
     #[test]
     fn part2() {
-        for (&i, must) in [
-            (b"\n17,x,13,19\0\0\0\0\0\0\0", 3417),
-            (b"\n67,7,59,61\0\0\0\0\0\0\0", 754018),
-            (b"\n67,x,7,59,61\0\0\0\0\0", 779210),
-            (b"\n67,7,x,59,61\0\0\0\0\0", 1261476),
-            (b"a\n1789,37,47,1889\0", 1202161486),
+        for (i, must) in [
+            ("\n17,x,13,19", 3417),
+            ("\n67,7,59,61", 754018),
+            ("\n67,x,7,59,61", 779210),
+            ("\n67,7,x,59,61", 1261476),
+            ("\n1789,37,47,1889", 1202161486),
         ]
         .iter()
         {
-            assert_eq!(super::part2_generic(&i), *must);
+            assert_eq!(super::part2_generic(i.as_bytes()), *must);
         }
     }
 }

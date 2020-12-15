@@ -1,5 +1,5 @@
-use aoc_rust::day14;
+use aoc_rust::day15;
 fn main() {
-    let mut contents: &'static [u8] = include_bytes!("../../python/inputs/14.txt");
-    println!("{}", day14::part2(&contents));
+    let contents: &'static [u8] = include_bytes!("../inputs/15.txt");
+    println!("{}", day15::part1(&contents));
 }

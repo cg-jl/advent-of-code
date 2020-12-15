@@ -1,6 +1,6 @@
-use std::{collections::HashMap, iter::repeat};
-use std::str;
+use fxhash::FxHasher;
 use itertools::Itertools;
+use std::{collections::HashMap, hash::BuildHasherDefault, iter::repeat};
 fn count_1s_bin(mut x: u64) -> Vec<u8> {
     let mut vec = Vec::new();
     let mut i = 0;
@@ -18,16 +18,15 @@ use lexical::parse_partial;
 
 pub fn parse_mask(line: &mut &[u8]) -> (u64, u64) {
     *line = &line[6..];
-    let res = line[..=36].iter().fold((0u64, 0u64), |acc, x| {
-        let (mut mask, mut xs) = acc;
-        mask <<= 1;
+    let res = line[..=36].iter().fold((0, 0), |(mut ones, mut xs), &val| {
+        ones <<= 1;
         xs <<= 1;
-        match x {
+        match val {
             b'X' => xs |= 1,
-            b'1' => mask |= 1,
+            b'1' => ones |= 1,
             _ => {}
         }
-        (mask, xs)
+        (ones, xs)
     });
     *line = &line[36..];
     res
@@ -44,9 +43,12 @@ pub fn parse_assignment(line: &mut &[u8]) -> (u64, u64) {
 
 pub fn part1(mut line: &[u8]) -> u64 {
     let (mut xs, mut not_xs, mut first_expr) = (0u64, 0u64, 0u64);
-    let mut mem = HashMap::<u64, u64>::new();
-    while line.len() > 0 {
-        match line[1] {
+    let mut mem = HashMap::<u64, u64, BuildHasherDefault<FxHasher>>::with_capacity_and_hasher(
+        256 * 1024,
+        Default::default(),
+    );
+    while line.len() > 1 {
+        match unsafe { *line.get_unchecked(1) } {
             b'a' => {
                 let (mask, next_xs) = parse_mask(&mut line);
                 xs = next_xs;
@@ -56,23 +58,27 @@ pub fn part1(mut line: &[u8]) -> u64 {
             b'e' => {
                 let (k, v) = parse_assignment(&mut line);
                 let val = first_expr & (not_xs | (xs & v));
-                *mem.entry(k).or_insert(val) = val;
+                *mem.entry(k).or_default() = val;
             }
             _ => {}
         }
-        // skip newline if exists
-        if line.len() > 0 { line = &line[1..]; }
+        if line.len() > 0 {
+            line = &line[1..];
+        }
     }
     mem.values().sum()
 }
 
 pub fn part2(mut line: &[u8]) -> u64 {
-    let (mut mask, mut xs, mut xs_idxs) = (0, 0,  Vec::new());
+    let (mut mask, mut xs, mut xs_idxs) = (0, 0, Vec::new());
 
-    let mut mem = HashMap::<u64, u64>::new();
+    let mut mem = HashMap::<u64, u64, BuildHasherDefault<FxHasher>>::with_capacity_and_hasher(
+        256 * 1024,
+        Default::default(),
+    );
 
-    while line.len() > 0 {
-        match line[1] {
+    while line.len() > 1 {
+        match unsafe { *line.get_unchecked(1) } {
             b'a' => {
                 let (new_mask, new_xs) = parse_mask(&mut line);
                 xs_idxs = count_1s_bin(new_xs);
@@ -84,20 +90,33 @@ pub fn part2(mut line: &[u8]) -> u64 {
                 k &= xs | !mask;
                 k |= !xs & mask;
 
-                for p in repeat([0, 1].iter()).take(xs_idxs.len()).multi_cartesian_product() {
+                // let mut count = 0;
+                // for _ in 0..(1 << xs.count_ones()) {
+                //     *mem.entry(count & xs | mask | k).or_default() = v;
+                //     count = count.wrapping_add(1);
+                //     count |= !xs;
+                // }
+
+                for p in repeat([0, 1].iter())
+                    .take(xs_idxs.len())
+                    .multi_cartesian_product()
+                {
                     let mut k0 = k.clone();
                     for (i, idx) in xs_idxs.iter().enumerate() {
-                        k0 &= !(1 << idx);
-                        k0 |= p[i] << idx;
+                        unsafe {
+                            k0 &= !(1 << idx);
+                            k0 |= *p.get_unchecked(i) << idx;
+                        }
                     }
-                    *mem.entry(k0).or_insert(v) = v;
+                    *mem.entry(k0).or_default() = v;
                 }
-
             }
 
-            _ =>{}
+            _ => {}
         }
-        if line.len() > 0 { line = &line[1..]; }
+        if line.len() > 0 {
+            line = &line[1..];
+        }
     }
 
     mem.values().sum()
@@ -120,9 +139,14 @@ mem[8] = 0"#
 
     #[test]
     fn part2() {
-        assert_eq!(super::part2(br#"mask = 000000000000000000000000000000X1001X
+        assert_eq!(
+            super::part2(
+                br#"mask = 000000000000000000000000000000X1001X
 mem[42] = 100
 mask = 00000000000000000000000000000000X0XX
-mem[26] = 1"#), 208);
+mem[26] = 1"#
+            ),
+            208
+        );
     }
 }
