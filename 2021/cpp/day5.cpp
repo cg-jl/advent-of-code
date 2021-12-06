@@ -67,7 +67,6 @@ auto plot_line(int* matrix, const Line& line) -> void {
         // now the N value:
         const int n = line.end.y - line.end.x * m;
 
-
         const std::size_t col_start = std::min(line.end.x, line.start.x);
         const std::size_t col_end = std::max(line.end.x, line.start.x);
 
@@ -86,7 +85,6 @@ auto main() -> int {
     for (const auto& line : reader) {
         plot_line(matrix.get(), line);
     }
-
 
     std::size_t count = 0;
     for (std::size_t i = 0; i < MAT_W * MAT_W; ++i) {
