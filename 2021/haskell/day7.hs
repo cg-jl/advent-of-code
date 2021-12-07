@@ -1,7 +1,7 @@
-import Control.Applicative
-import Control.Arrow
-import Data.Functor
-import Data.List
+import Control.Applicative ( Applicative(liftA2) )
+import Control.Arrow ( (>>>), Arrow((&&&)) )
+import Data.Functor ( (<&>) )
+import Data.List ( groupBy, partition )
 
 parse :: String -> [Int]
 parse = groupBy (\a b -> a /= ',' && b /= ',') >>> snd . partition (== ",") >>> map read
