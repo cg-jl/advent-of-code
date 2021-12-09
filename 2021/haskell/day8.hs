@@ -109,4 +109,3 @@ main = do
   print $ partTwo contents
 
 
-
