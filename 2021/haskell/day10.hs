@@ -1,11 +1,8 @@
 {-# LANGUAGE FlexibleContexts #-}
 import Control.Arrow
-import Data.Traversable
-import Control.Applicative
 import Control.Monad.Except
 import Data.Functor
 import System.Exit
-import System.IO
 import System.Environment
 import Data.Maybe
 import Data.List
