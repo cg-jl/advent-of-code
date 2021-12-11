@@ -1,10 +1,8 @@
-#include <array>
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <string_view>
-#include <utility>
 #include <vector>
 
 using byte = unsigned char;
@@ -60,7 +58,6 @@ auto step(byte *matrix) -> std::size_t {
             const auto row = index / 10;
             const auto col = index - row * 10;
 
-
             const auto row_offset = row * 10;
 
             // propagate to the row above
@@ -84,7 +81,7 @@ auto step(byte *matrix) -> std::size_t {
             }
         }
     }
-    
+
     // finally, any octopus that flashed during this step has its energy level
     // set to 0, as it used all of its energy to flash.
     std::size_t flashed_count = 0;
@@ -92,12 +89,10 @@ auto step(byte *matrix) -> std::size_t {
         if (already_flashed[i]) {
             matrix[i] = '0';
             flashed_count++;
-        } 
-
+        }
     }
     return flashed_count;
 }
-
 
 auto main(int argc, char *const argv[]) -> int {
     if (argc != 2) {
@@ -105,26 +100,22 @@ auto main(int argc, char *const argv[]) -> int {
         std::exit(0);
     }
 
+    auto matrix = read_file(std::string_view(argv[1], std::strlen(argv[1])));
 
-    auto matrix =
-        read_file(std::string_view(argv[1], std::strlen(argv[1])));
+    std::size_t total_flashes = 0;
 
+    std::size_t i = 0;
 
-    // part 1
-    // std::size_t total_flashes = 0;
-
-    // for (std::size_t i = 0; i < 100; ++i) {
-    //     total_flashes += step(matrix.get());
-    // }
-
-    // std::cout << "total flashes: " << total_flashes << '\n';
-
-    for (std::size_t i = 0; true; ++i) {
-        if (step(matrix.get()) == 100) {
-            std::cout << "simultaneous flash at: " << (i + 1) << '\n';
-            break;
-        }
+    for (; i < 100; ++i) {
+        total_flashes += step(matrix.get());
     }
+
+    std::cout << "total flashes after 100 steps: " << total_flashes << '\n';
+    while (step(matrix.get()) != 100) ++i;
+    std::cout << "simultaneous flash at: " << (i + 1) << '\n';
+
+
+
 
 
     return 0;
