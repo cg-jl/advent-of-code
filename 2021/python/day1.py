@@ -11,15 +11,14 @@ def count_times_greater(iter):
     return count
 
 
-
 def make_three_windows(items):
     for i in range(len(items) - 2):
         yield items[i], items[i + 1], items[i + 2]
 
 
-
 def part1(contents):
     return count_times_greater(contents)
+
 
 def part2(contents):
     return count_times_greater(map(sum, make_three_windows(contents)))
@@ -33,7 +32,3 @@ if __name__ == "__main__":
     print(part1(contents))
     print("Part 2: ")
     print(part2(contents))
-
-
-
-

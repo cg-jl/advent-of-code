@@ -1,8 +1,5 @@
-DIRS = {
-    "down" : (1, 0),
-    "forward" : (0, 1),
-    "up": (-1, 0)
-}
+DIRS = {"down": (1, 0), "forward": (0, 1), "up": (-1, 0)}
+
 
 def parse_line(line: str):
     dir, n = line.split()
@@ -10,10 +7,11 @@ def parse_line(line: str):
     n = int(n)
     return n * dx, n * dy
 
+
 def sim_part2(iter):
     x, y, aim = 0, 0, 0
     for action, X in iter:
-        if action == 0: # then it was a `forward`
+        if action == 0:  # then it was a `forward`
             x += X
             y += X * aim
         else:
@@ -28,9 +26,11 @@ def vector_add(iter):
         y += dy
     return x, y
 
+
 def part1(input):
     x, y = vector_add(map(parse_line, input))
     return x * y
+
 
 if __name__ == "__main__":
     with open("inputs/day2.txt") as input:
