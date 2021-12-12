@@ -6,6 +6,7 @@
 #include <string_view>
 #include <vector>
 
+#define UTIL_INPUT_READER
 #include "util.h"
 
 struct Point {

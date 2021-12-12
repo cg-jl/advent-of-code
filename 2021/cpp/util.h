@@ -5,7 +5,9 @@
 #include <optional>
 #include <string_view>
 
+
 namespace util {
+#ifdef UTIL_INPUT_READER
 template <typename T>
 class InputReader {
     std::ifstream input;
@@ -66,4 +68,17 @@ class InputReader {
      }
     iterator end() { return iterator(*this, "", true); }
 };
+#endif
+#ifdef UTIL_FILE_TO_STRING
+auto load_file_to_string(std::string_view filename) -> std::string {
+    std::ifstream stream(filename.data());
+    std::string total;
+    std::string line;
+    while (std::getline(stream, line)) {
+        if (!total.empty()) total.push_back('\n');
+        total += line;
+    }
+    return total;
+}
+#endif
 }  // namespace util
