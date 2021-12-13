@@ -11,7 +11,7 @@ namespace util {
 template <typename T>
 class InputReader {
     std::ifstream input;
-    std::function<T(std::string_view)> m_line_parser;
+    std::function<T(std::string_view&&)> m_line_parser;
     std::string linebuf;
 
    public:
@@ -35,9 +35,9 @@ class InputReader {
         }
         /// Parses the current line with the given function
         T operator*() { return m_reader.parse(m_line); }
-        bool operator==(const iterator& other) {
+        bool operator!=(const iterator& other) {
             // this operator is only going to be used in order to check
-            return m_is_end ? other.m_is_end : false;
+            return !(m_is_end ? other.m_is_end : false);
         }
         bool operator!=(const iterator& other) { return !(*this == other);}
     };
