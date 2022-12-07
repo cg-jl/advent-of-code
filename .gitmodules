@@ -1,0 +1,3 @@
+[submodule "Zig-AoC-Template"]
+	path = 2022/zig
+	url = https://github.com/SpexGuy/Zig-AoC-Template
