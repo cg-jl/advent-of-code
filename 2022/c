@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+import itertools
+import numpy as np
+
+
+with open('input') as handle:
+    lines = handle.readlines()
+
+lines =  np.matrix([*map(lambda l: list(map(lambda x: ord(x) - 48,l.strip())), lines)], dtype=np.uint8)
+
+
+def propagate_shadows(diri, dirk, mat, counts):
+    blocked_bys = np.zeros(shape=np.shape(mat), dtype=np.uint8)
+    ri = [*range(1, len(mat) - 1)]
+    rk = [*ri]
+    if diri < 0: ri.reverse()
+    if dirk < 0: rk.reverse()
+    for i in ri:
+        lasti = i - diri
+        for k in rk:
+            lastk = k - dirk
+            this = mat[i,k]
+            other = max(blocked_bys[lasti,lastk], mat[lasti,lastk])
+            if other >= this:
+                blocked_bys[i,k] = other
+                counts[i,k] += 1
+
+blocked_bys = np.zeros(shape=(len(lines), len(lines)), dtype=np.uint8)
+counts = np.zeros(shape=(len(lines), len(lines)), dtype=np.uint8)
+
+# up
+propagate_shadows(-1, 0, lines, counts)
+# down
+propagate_shadows(1, 0, lines, counts)
+# left
+propagate_shadows(0, -1, lines, counts)
+# right
+propagate_shadows(0, 1, lines, counts)
+
+
+print(sum(sum(counts < 4)))
+
+
+print(lines)

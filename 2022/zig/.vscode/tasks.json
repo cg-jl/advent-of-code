@@ -1,0 +1,16 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build zig",
+            "command": "/home/gsus/.local/bin/zig",
+            "args": ["test", "${workspaceFolder}/src/${fileBasename}", "-femit-bin=${workspaceFolder}/zig-out/bin/${fileBasenameNoExtension}-test", "--test-no-exec"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
